@@ -1,7 +1,7 @@
 import puppeteer from "puppeteer-core";
 
 const LAUNCH_OPTION = {
-  headless: false,
+  // headless: false,
   executablePath:
     "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
   slowMo: 500,
@@ -18,7 +18,14 @@ const LAUNCH_OPTION = {
   const browser = await puppeteer.launch(LAUNCH_OPTION);
   const page = await browser.newPage();
   await page.goto("https://takahira.io");
-  await page.screenshot({ path: "banner.png" });
+  const dimensions = await page.evaluate(() => {
+    return {
+      title: (<HTMLMetaElement>(
+        document.head.querySelector('meta[property="og:title"]')
+      ))?.content,
+    };
+  });
+  console.log(dimensions);
 
   await browser.close();
 })();
