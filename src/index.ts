@@ -19,10 +19,22 @@ const LAUNCH_OPTION = {
   const page = await browser.newPage();
   await page.goto("https://takahira.io");
   const dimensions = await page.evaluate(() => {
+    const ogTitle = <HTMLMetaElement>(
+      document.head.querySelector('meta[property="og:title"')
+    );
+    const title = ogTitle?.content ?? document.title;
+
+    const ogDescription = <HTMLMetaElement>(
+      document.head.querySelector('meta[property="og:description"')
+    );
+    const metaDescription = <HTMLMetaElement>(
+      document.head.querySelector('meta[name="description"]')
+    );
+    const description = ogDescription?.content ?? metaDescription.textContent;
+
     return {
-      title: (<HTMLMetaElement>(
-        document.head.querySelector('meta[property="og:title"]')
-      ))?.content,
+      title,
+      description,
     };
   });
   console.log(dimensions);
